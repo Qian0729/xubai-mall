@@ -1,0 +1,48 @@
+{
+  "name": "序白商城",
+  "appid": "",
+  "description": "序白 —— 年轻人的简约服装品牌",
+  "versionName": "1.0.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "app-plus": {
+    "usingComponents": true,
+    "nvueStyleCompiler": "uni-app",
+    "compilerVersion": 3,
+    "splashscreen": {
+      "alwaysShowBeforeRender": true,
+      "waiting": true,
+      "autoclose": true,
+      "delay": 0
+    },
+    "modules": {},
+    "distribute": {
+      "android": {
+        "permissions": [
+          "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>"
+        ]
+      },
+      "ios": {},
+      "sdkConfigs": {}
+    }
+  },
+  "quickapp": {},
+  "mp-weixin": {
+    "appid": "",
+    "setting": {
+      "urlCheck": false,
+      "es6": true,
+      "minified": true
+    },
+    "usingComponents": true
+  },
+  "vueVersion": "3",
+  "h5": {
+    "title": "序白 · 简约服装",
+    "router": {
+      "mode": "hash",
+      "base": "/xubai-mall/"
+    },
+    "sdkConfigs": {}
+  }
+}
