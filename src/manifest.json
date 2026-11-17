@@ -43,6 +43,9 @@
       "mode": "hash",
       "base": "/xubai-mall/"
     },
+    "rpxCalcMaxDeviceWidth": 750,
+    "rpxCalcBaseDeviceWidth": 375,
+    "rpxCalcIncludeWidth": 750,
     "sdkConfigs": {}
   }
 }

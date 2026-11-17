@@ -74,7 +74,7 @@ function del(id: string) {
 }
 </script>
 
-<style>
+<style scoped>
 .page {
   padding-bottom: 180rpx;
 }
@@ -137,5 +137,24 @@ function del(id: string) {
   padding: 16rpx 32rpx;
   background: #ffffff;
   box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+@media (min-width: 768px) {
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .page {
+    padding-bottom: 150px;
+  }
+
+  .submit-wrap {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 860px;
+  }
 }
 </style>

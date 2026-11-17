@@ -105,7 +105,7 @@ function goCheckout() {
 }
 </script>
 
-<style>
+<style scoped>
 .page {
   padding-bottom: 160rpx;
 }
@@ -251,5 +251,24 @@ function goCheckout() {
 }
 .settle.disabled {
   opacity: 0.4;
+}
+
+@media (min-width: 768px) {
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .page {
+    padding-bottom: 140px;
+  }
+
+  .bottom-bar {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 860px;
+  }
 }
 </style>

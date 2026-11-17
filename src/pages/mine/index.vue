@@ -52,7 +52,7 @@ function showAbout() {
 }
 </script>
 
-<style>
+<style scoped>
 .page {
   padding-bottom: 40rpx;
 }
@@ -106,5 +106,13 @@ function showAbout() {
   color: #9a968e;
   font-size: 22rpx;
   padding: 40rpx 0;
+}
+
+@media (min-width: 768px) {
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+  }
 }
 </style>

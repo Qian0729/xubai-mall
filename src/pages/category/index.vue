@@ -97,7 +97,7 @@ function goDetail(id: string) {
 }
 </script>
 
-<style>
+<style scoped>
 .tabs {
   white-space: nowrap;
   padding: 24rpx 20rpx;
@@ -187,5 +187,20 @@ function goDetail(id: string) {
   text-align: center;
   color: #9a968e;
   padding: 120rpx 0;
+}
+
+@media (min-width: 768px) {
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .item-img {
+    width: 180px;
+    height: 180px;
+  }
+  .item {
+    padding: 24rpx;
+  }
 }
 </style>

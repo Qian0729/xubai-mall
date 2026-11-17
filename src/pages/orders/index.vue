@@ -56,7 +56,7 @@ function goHome() {
 }
 </script>
 
-<style>
+<style scoped>
 .page {
   padding-bottom: 40rpx;
 }
@@ -126,5 +126,13 @@ function goHome() {
 .total {
   font-size: 28rpx;
   font-weight: 700;
+}
+
+@media (min-width: 768px) {
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+  }
 }
 </style>

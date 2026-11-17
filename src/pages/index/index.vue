@@ -67,7 +67,7 @@ function goCategory() {
 }
 </script>
 
-<style>
+<style scoped>
 .page {
   padding-bottom: 40rpx;
 }
@@ -215,5 +215,31 @@ function goCategory() {
   color: #9a968e;
   font-size: 22rpx;
   padding: 40rpx 0;
+}
+
+@media (min-width: 768px) {
+  .page {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .hero {
+    height: 600px;
+  }
+  .hcard {
+    width: 280px;
+  }
+  .hcard-img {
+    width: 280px;
+    height: 320px;
+  }
+  .grid .gcard {
+    width: calc(25% - 12rpx);
+  }
+  .gcard-img {
+    height: 300px;
+  }
+  .gcard-name {
+    font-size: 26rpx;
+  }
 }
 </style>

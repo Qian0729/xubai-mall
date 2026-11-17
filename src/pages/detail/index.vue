@@ -131,7 +131,7 @@ function preview(index: number) {
 }
 </script>
 
-<style>
+<style scoped>
 .page {
   padding-bottom: 160rpx;
 }
@@ -263,5 +263,27 @@ function preview(index: number) {
 .bar-btn.primary {
   background: #1a1a1a;
   color: #ffffff;
+}
+
+@media (min-width: 768px) {
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .page {
+    padding-bottom: 140px;
+  }
+  .swiper {
+    height: 560px;
+  }
+
+  .bottom-bar {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 860px;
+  }
 }
 </style>
