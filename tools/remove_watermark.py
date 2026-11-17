@@ -13,6 +13,10 @@ for name in sorted(os.listdir(IMG_DIR)):
     path = os.path.join(IMG_DIR, name)
     img = Image.open(path).convert("RGB")
     w, h = img.size
+    if h <= 1000:
+        # 已处理过（920 高），跳过
+        print(f"skip {name}: {w}x{h}")
+        continue
     # 以右下角水印区域为准，裁掉底部条带
     cropped = img.crop((0, 0, w, h - CROP_BOTTOM))
     cropped.save(path, optimize=True)

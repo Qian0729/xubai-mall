@@ -45,13 +45,14 @@
       </view>
     </view>
 
-    <view class="mock-tip">
-      <text>⚠️ 演示模式：提交订单为模拟操作，不会产生真实支付与扣款</text>
+    <!-- 服务保障 -->
+    <view class="card service-row">
+      <text v-for="s in services" :key="s" class="service-tag">{{ s }}</text>
     </view>
 
     <!-- 提交 -->
     <view class="submit-wrap safe-bottom">
-      <view class="btn-primary" @tap="onSubmit">模拟提交订单</view>
+      <view class="btn-primary" @tap="onSubmit">提交订单</view>
     </view>
   </view>
 </template>
@@ -59,7 +60,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
-import { getGoodsById } from '../../data/goods'
+import { getGoodsById, services } from '../../data/goods'
 import {
   addressStore,
   cartStore,
@@ -67,7 +68,7 @@ import {
   defaultAddress,
   pickedAddressId,
   removeCheckedItems,
-  submitMockOrder
+  submitOrder
 } from '../../store'
 import type { Address } from '../../data/types'
 
@@ -112,33 +113,22 @@ function onSubmit() {
     uni.showToast({ title: '没有可结算的商品', icon: 'none' })
     return
   }
-  uni.showModal({
-    title: '模拟下单',
-    content: '这是演示项目，不会发起真实支付。确认模拟提交订单吗？',
-    confirmText: '模拟提交',
-    success: (res) => {
-      if (!res.confirm) return
-      const addr = address.value as Address
-      submitMockOrder(
-        rows.value.map((r) => ({
-          goodsId: r.goodsId,
-          name: r.name,
-          image: r.image,
-          color: r.color,
-          size: r.size,
-          count: r.count,
-          price: r.price
-        })),
-        total.value,
-        addr
-      )
-      removeCheckedItems()
-      uni.showToast({ title: '模拟下单成功', icon: 'success' })
-      setTimeout(() => {
-        uni.redirectTo({ url: '/pages/orders/index' })
-      }, 900)
-    }
-  })
+  const addr = address.value as Address
+  const order = submitOrder(
+    rows.value.map((r) => ({
+      goodsId: r.goodsId,
+      name: r.name,
+      image: r.image,
+      color: r.color,
+      size: r.size,
+      count: r.count,
+      price: r.price
+    })),
+    total.value,
+    addr
+  )
+  removeCheckedItems()
+  uni.redirectTo({ url: '/pages/pay/index?id=' + order.id })
 }
 </script>
 
@@ -243,12 +233,17 @@ function onSubmit() {
   font-size: 32rpx;
   font-weight: 700;
 }
-.mock-tip {
-  text-align: center;
+.service-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+.service-tag {
   font-size: 22rpx;
-  color: #b0aba1;
-  padding: 10rpx 0;
-  line-height: 1.6;
+  color: #6b675f;
+  background: #f7f5f0;
+  border-radius: 8rpx;
+  padding: 8rpx 18rpx;
+  margin: 0 12rpx 12rpx 0;
 }
 .submit-wrap {
   position: fixed;

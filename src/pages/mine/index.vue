@@ -5,7 +5,7 @@
       <view class="avatar">序</view>
       <view class="user-info">
         <text class="username">序白用户</text>
-        <text class="user-tip">演示账号 · 数据仅保存在本机</text>
+        <text class="user-tip">序白 · 尊享会员</text>
       </view>
     </view>
 
@@ -45,7 +45,7 @@ function go(url: string) {
 function showAbout() {
   uni.showModal({
     title: '关于序白',
-    content: '「序白」是一个面向年轻人的简约服装品牌演示商城。本项目为前端演示版本，商品、订单与支付均为模拟数据。',
+    content: '「序白 XU BAI」—— 把复杂留给世界，把简单留给衣橱。精选天然面料与利落剪裁，为年轻人打造一衣多穿的简约衣橱。',
     showCancel: false,
     confirmText: '知道了'
   })

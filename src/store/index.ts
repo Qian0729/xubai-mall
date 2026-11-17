@@ -141,7 +141,7 @@ export function genId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7)
 }
 
-/* ---------------- 订单（模拟） ---------------- */
+/* ---------------- 订单 ---------------- */
 
 export const orderStore = reactive<{ list: Order[] }>({
   list: load<Order[]>(ORDER_KEY, [])
@@ -154,25 +154,82 @@ watch(
 )
 
 /**
- * 提交订单 —— ⚠️ 模拟下单，不会发起任何真实支付或请求。
- * 订单数据仅保存在本地，供演示流程使用。
+ * 提交订单，创建「待付款」订单。
+ * 当前版本数据保存在本地；接入真实后端时，将此函数替换为创建订单接口调用。
  */
-export function submitMockOrder(items: Order['items'], total: number, address: Address): Order {
+export function submitOrder(items: Order['items'], total: number, address: Address): Order {
   const order: Order = {
     id: 'XB' + Date.now(),
     items,
     total,
     address,
     createdAt: Date.now(),
-    status: '模拟订单 · 待支付',
-    mock: true
+    status: '待付款'
   }
   orderStore.list.unshift(order)
   return order
 }
 
-/** 订单状态文案（页面上醒目标注为模拟） */
-export function payMockOrder(orderId: string) {
+/**
+ * 支付订单。
+ * 当前版本：本地完成支付状态流转（适合演示与联调前的开发）。
+ * 接入真实支付时，在此处调用 uni.requestPayment（小程序）或支付 SDK（H5），
+ * 以服务端支付回调结果为准更新订单状态。
+ */
+export function payOrder(orderId: string): boolean {
   const o = orderStore.list.find((x) => x.id === orderId)
-  if (o) o.status = '模拟订单 · 已支付'
+  if (!o || o.status !== '待付款') return false
+  o.status = '待发货'
+  o.paidAt = Date.now()
+  // 演示：支付后 6 秒自动发货并生成物流单号；接入真实后台后由商家发货回调驱动
+  setTimeout(() => {
+    const cur = orderStore.list.find((x) => x.id === orderId)
+    if (cur && cur.status === '待发货') {
+      cur.status = '已发货'
+      cur.shippedAt = Date.now()
+      cur.logistics = {
+        company: '顺丰速运',
+        no: 'SF' + String(Date.now()).slice(-12)
+      }
+    }
+  }, 6000)
+  return true
 }
+
+/** 取消订单（仅待付款可取消） */
+export function cancelOrder(orderId: string): boolean {
+  const o = orderStore.list.find((x) => x.id === orderId)
+  if (!o || o.status !== '待付款') return false
+  o.status = '已取消'
+  return true
+}
+
+/** 确认收货 */
+export function confirmReceive(orderId: string): boolean {
+  const o = orderStore.list.find((x) => x.id === orderId)
+  if (!o || o.status !== '已发货') return false
+  o.status = '已完成'
+  return true
+}
+
+/** 删除订单 */
+export function deleteOrder(orderId: string) {
+  orderStore.list = orderStore.list.filter((x) => x.id !== orderId)
+}
+
+/* ---------------- tabBar 购物车角标 ---------------- */
+
+export function updateCartBadge() {
+  const n = cartTotalCount.value
+  try {
+    if (n > 0) {
+      uni.setTabBarBadge({ index: 2, text: n > 99 ? '99+' : String(n) })
+    } else {
+      uni.removeTabBarBadge({ index: 2 })
+    }
+  } catch (e) {
+    /* 某些端在 tabBar 未就绪时会失败，忽略 */
+  }
+}
+
+watch(cartTotalCount, () => updateCartBadge())

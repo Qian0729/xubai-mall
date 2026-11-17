@@ -54,10 +54,31 @@
     <view class="card">
       <text class="label">商品详情</text>
       <text class="desc">{{ goods.description }}</text>
+      <view v-if="goods.care" class="care">
+        <text class="care-label">洗护建议</text>
+        <text class="care-text">{{ goods.care }}</text>
+      </view>
     </view>
 
-    <view class="mock-tip">
-      <text>演示数据：商品与价格均为模拟，仅用于界面展示</text>
+    <!-- 尺码表 -->
+    <view v-if="goods.sizeTable" class="card">
+      <text class="label">{{ goods.sizeTable.title }}</text>
+      <view class="size-table">
+        <view class="size-row size-head">
+          <text v-for="h in goods.sizeTable.header" :key="h" class="size-cell">{{ h }}</text>
+        </view>
+        <view v-for="(row, ri) in goods.sizeTable.rows" :key="ri" class="size-row">
+          <text v-for="(cell, ci) in row" :key="ci" class="size-cell">{{ cell }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 服务保障 -->
+    <view class="card service-card">
+      <text class="label">服务保障</text>
+      <view class="service-list">
+        <text v-for="s in services" :key="s" class="service-tag">{{ s }}</text>
+      </view>
     </view>
 
     <!-- 底部操作栏 -->
@@ -74,7 +95,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
-import { getGoodsById } from '../../data/goods'
+import { getGoodsById, services } from '../../data/goods'
 import { addToCart } from '../../store'
 import type { Goods } from '../../data/types'
 
@@ -224,11 +245,58 @@ function preview(index: number) {
   color: #6b675f;
   line-height: 1.7;
 }
-.mock-tip {
+.care {
+  margin-top: 24rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx solid #f0ede8;
+}
+.care-label {
+  display: block;
+  font-size: 24rpx;
+  color: #6b675f;
+  margin-bottom: 8rpx;
+}
+.care-text {
+  font-size: 24rpx;
+  color: #9a968e;
+}
+.size-table {
+  border: 2rpx solid #f0ede8;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+.size-row {
+  display: flex;
+  border-bottom: 2rpx solid #f0ede8;
+}
+.size-row:last-child {
+  border-bottom: none;
+}
+.size-head {
+  background: #f7f5f0;
+}
+.size-cell {
+  flex: 1;
   text-align: center;
+  font-size: 24rpx;
+  color: #1a1a1a;
+  padding: 14rpx 4rpx;
+}
+.size-head .size-cell {
+  color: #6b675f;
   font-size: 22rpx;
-  color: #b0aba1;
-  padding: 10rpx 0;
+}
+.service-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+.service-tag {
+  font-size: 22rpx;
+  color: #6b675f;
+  background: #f7f5f0;
+  border-radius: 8rpx;
+  padding: 8rpx 18rpx;
+  margin: 0 12rpx 12rpx 0;
 }
 .bottom-bar {
   position: fixed;

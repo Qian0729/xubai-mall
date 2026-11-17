@@ -12,6 +12,24 @@
       </view>
     </view>
 
+    <!-- 品类导航 -->
+    <view class="cat-nav">
+      <view
+        v-for="c in categories"
+        :key="c.key"
+        class="cat-item"
+        @tap="goCategory(c.key)"
+      >
+        <text class="cat-name">{{ c.label }}</text>
+        <text class="cat-en">{{ catEn[c.key] }}</text>
+      </view>
+    </view>
+
+    <!-- 服务保障 -->
+    <view class="service-strip">
+      <text v-for="s in services" :key="s" class="service-item">✓ {{ s }}</text>
+    </view>
+
     <!-- 新品推荐 -->
     <view class="section">
       <view class="section-head">
@@ -47,6 +65,13 @@
       </view>
     </view>
 
+    <!-- 品牌故事 -->
+    <view class="story">
+      <text class="story-title">序白的故事</text>
+      <text class="story-line">「序」是次序，是取舍；「白」是留白，是本真。</text>
+      <text class="story-text">我们相信衣橱不需要太多，只需要几件足够好的。序白精选天然面料，以利落的剪裁与克制的配色，为年轻人打造一衣多穿的简约衣橱——把复杂留给世界，把简单留给自己。</text>
+    </view>
+
     <view class="footer">
       <text>序白 XU BAI · 简约生活</text>
     </view>
@@ -54,16 +79,34 @@
 </template>
 
 <script setup lang="ts">
-import { goodsList } from '../../data/goods'
+import { categories, goodsList, services } from '../../data/goods'
+import type { CategoryKey } from '../../data/types'
 
 const newGoods = goodsList.filter((g) => g.isNew)
+
+const catEn: Record<CategoryKey, string> = {
+  tops: 'TOPS',
+  knitwear: 'KNITWEAR',
+  dresses: 'DRESSES',
+  pants: 'PANTS',
+  coats: 'OUTERWEAR',
+  accessories: 'ACCESSORIES'
+}
 
 function goDetail(id: string) {
   uni.navigateTo({ url: '/pages/detail/index?id=' + id })
 }
 
-function goCategory() {
+function goCategory(key?: CategoryKey) {
   uni.switchTab({ url: '/pages/category/index' })
+  if (key) {
+    // 分类页通过本地存储感知入口品类
+    try {
+      uni.setStorageSync('xubai_cat_entry', key)
+    } catch (e) {
+      /* 忽略 */
+    }
+  }
 }
 </script>
 
@@ -215,6 +258,66 @@ function goCategory() {
   color: #9a968e;
   font-size: 22rpx;
   padding: 40rpx 0;
+}
+.cat-nav {
+  display: flex;
+  padding: 24rpx 20rpx 0;
+}
+.cat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 22rpx 0;
+  margin: 0 8rpx;
+}
+.cat-name {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+.cat-en {
+  font-size: 16rpx;
+  color: #b0aba1;
+  letter-spacing: 2rpx;
+  margin-top: 8rpx;
+}
+.service-strip {
+  display: flex;
+  justify-content: space-between;
+  padding: 20rpx 40rpx 0;
+}
+.service-item {
+  font-size: 22rpx;
+  color: #6b675f;
+}
+.story {
+  margin: 40rpx 20rpx 0;
+  background: #1a1a1a;
+  border-radius: 20rpx;
+  padding: 48rpx 40rpx;
+}
+.story-title {
+  display: block;
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 600;
+  letter-spacing: 6rpx;
+}
+.story-line {
+  display: block;
+  color: #cfcbc3;
+  font-size: 24rpx;
+  margin-top: 20rpx;
+  letter-spacing: 2rpx;
+}
+.story-text {
+  display: block;
+  color: #9a968e;
+  font-size: 24rpx;
+  line-height: 1.8;
+  margin-top: 16rpx;
 }
 
 @media (min-width: 768px) {

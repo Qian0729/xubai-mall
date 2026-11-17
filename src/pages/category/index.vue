@@ -56,11 +56,25 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import { categories, goodsList } from '../../data/goods'
 import type { CategoryKey } from '../../data/types'
 
 const tabs = [{ key: 'all' as const, label: '全部' }, ...categories]
 const activeTab = ref<CategoryKey | 'all'>('all')
+
+// 支持从首页品类导航直达对应分类
+onShow(() => {
+  try {
+    const entry = uni.getStorageSync('xubai_cat_entry')
+    if (entry && tabs.some((t) => t.key === entry)) {
+      activeTab.value = entry as CategoryKey
+    }
+    uni.removeStorageSync('xubai_cat_entry')
+  } catch (e) {
+    /* 忽略 */
+  }
+})
 
 const sortOptions = ['默认排序', '价格从低到高', '价格从高到低']
 const sortIndex = ref(0)

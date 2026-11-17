@@ -1,24 +1,26 @@
 <template>
   <view class="page">
-    <!-- 模拟标注 -->
-    <view class="mock-banner">
-      <text>以下订单均为本地模拟数据，不涉及真实交易</text>
-    </view>
+    <!-- 状态筛选 -->
+    <scroll-view scroll-x class="filter-tabs">
+      <view
+        v-for="t in tabs"
+        :key="t.key"
+        class="ftab"
+        :class="{ active: t.key === activeTab }"
+        @tap="activeTab = t.key"
+      >{{ t.label }}</view>
+    </scroll-view>
 
-    <view v-if="orderStore.list.length === 0" class="empty">
-      <text>暂无订单</text>
+    <view v-if="filtered.length === 0" class="empty">
+      <text class="empty-icon">🧺</text>
+      <text>暂无相关订单</text>
       <view class="btn-primary empty-btn" @tap="goHome">去逛逛</view>
     </view>
 
-    <view
-      v-for="o in orderStore.list"
-      :key="o.id"
-      class="card"
-      @tap="goDetail(o.id)"
-    >
+    <view v-for="o in filtered" :key="o.id" class="card" @tap="goDetail(o.id)">
       <view class="head">
         <text class="order-id">订单号 {{ o.id }}</text>
-        <text class="status" :class="{ paid: o.status.includes('已支付') }">{{ o.status }}</text>
+        <text class="status" :class="'st-' + statusKey(o.status)">{{ o.status }}</text>
       </view>
       <view class="thumbs">
         <image
@@ -32,14 +34,38 @@
       </view>
       <view class="foot">
         <text class="time">{{ formatTime(o.createdAt) }}</text>
-        <text class="total">合计 ¥{{ o.total }}</text>
+        <view class="foot-right">
+          <text class="total">合计 ¥{{ o.total }}</text>
+          <view v-if="o.status === '待付款'" class="mini-pay" @tap.stop="goPay(o.id)">去支付</view>
+        </view>
       </view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from 'vue'
 import { orderStore } from '../../store'
+import type { OrderStatus } from '../../data/types'
+
+const tabs: { key: 'all' | OrderStatus; label: string }[] = [
+  { key: 'all', label: '全部' },
+  { key: '待付款', label: '待付款' },
+  { key: '待发货', label: '待发货' },
+  { key: '已发货', label: '已发货' },
+  { key: '已完成', label: '已完成' }
+]
+const activeTab = ref<'all' | OrderStatus>('all')
+
+const filtered = computed(() =>
+  activeTab.value === 'all'
+    ? orderStore.list
+    : orderStore.list.filter((o) => o.status === activeTab.value)
+)
+
+function statusKey(s: OrderStatus): string {
+  return { 待付款: 'pay', 待发货: 'ship', 已发货: 'transit', 已完成: 'done', 已取消: 'cancel' }[s]
+}
 
 function formatTime(ts: number): string {
   const d = new Date(ts)
@@ -51,6 +77,10 @@ function goDetail(id: string) {
   uni.navigateTo({ url: '/pages/order-detail/index?id=' + id })
 }
 
+function goPay(id: string) {
+  uni.navigateTo({ url: '/pages/pay/index?id=' + id })
+}
+
 function goHome() {
   uni.switchTab({ url: '/pages/index/index' })
 }
@@ -60,20 +90,34 @@ function goHome() {
 .page {
   padding-bottom: 40rpx;
 }
-.mock-banner {
-  background: #fff7e6;
-  color: #a9762a;
-  font-size: 22rpx;
-  text-align: center;
-  padding: 16rpx;
+.filter-tabs {
+  white-space: nowrap;
+  padding: 20rpx 20rpx 8rpx;
+}
+.ftab {
+  display: inline-block;
+  padding: 10rpx 30rpx;
+  margin: 0 8rpx;
+  font-size: 26rpx;
+  color: #6b675f;
+  background: #ffffff;
+  border-radius: 30rpx;
+}
+.ftab.active {
+  background: #1a1a1a;
+  color: #ffffff;
 }
 .empty {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 200rpx 0;
+  padding: 160rpx 0;
   color: #9a968e;
   font-size: 28rpx;
+}
+.empty-icon {
+  font-size: 72rpx;
+  margin-bottom: 20rpx;
 }
 .empty-btn {
   margin-top: 40rpx;
@@ -90,14 +134,28 @@ function goHome() {
 }
 .status {
   font-size: 22rpx;
-  color: #a9762a;
-  background: #fff7e6;
   padding: 4rpx 16rpx;
   border-radius: 8rpx;
 }
-.status.paid {
+.st-pay {
+  color: #a9762a;
+  background: #fff7e6;
+}
+.st-ship {
+  color: #4a6ea9;
+  background: #edf3fb;
+}
+.st-transit {
+  color: #4a6ea9;
+  background: #edf3fb;
+}
+.st-done {
   color: #4c8055;
   background: #eef7ef;
+}
+.st-cancel {
+  color: #9a968e;
+  background: #f0ede8;
 }
 .thumbs {
   display: flex;
@@ -117,19 +175,29 @@ function goHome() {
 .foot {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
 }
 .time {
   font-size: 22rpx;
   color: #9a968e;
 }
+.foot-right {
+  display: flex;
+  align-items: center;
+}
 .total {
   font-size: 28rpx;
   font-weight: 700;
 }
-
+.mini-pay {
+  margin-left: 20rpx;
+  background: #1a1a1a;
+  color: #ffffff;
+  font-size: 22rpx;
+  padding: 8rpx 24rpx;
+  border-radius: 26rpx;
+}
 @media (min-width: 768px) {
-
   .page {
     max-width: 860px;
     margin: 0 auto;

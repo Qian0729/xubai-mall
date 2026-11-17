@@ -1,5 +1,5 @@
 /** 商品分类 */
-export type CategoryKey = 'tops' | 'pants' | 'coats' | 'accessories'
+export type CategoryKey = 'tops' | 'dresses' | 'pants' | 'coats' | 'knitwear' | 'accessories'
 
 export interface Category {
   key: CategoryKey
@@ -27,6 +27,10 @@ export interface Goods {
   description: string
   /** 材质 */
   material: string
+  /** 洗护建议 */
+  care?: string
+  /** 尺码表（表头 + 数据行） */
+  sizeTable?: { title: string; header: string[]; rows: string[][] }
   /** 是否新品 */
   isNew?: boolean
 }
@@ -61,9 +65,15 @@ export interface OrderItem {
   price: number
 }
 
-export type OrderStatus = '模拟订单 · 待支付' | '模拟订单 · 已支付'
+export type OrderStatus = '待付款' | '待发货' | '已发货' | '已完成' | '已取消'
 
-/** 订单（本地持久化，模拟下单） */
+/** 物流信息 */
+export interface Logistics {
+  company: string
+  no: string
+}
+
+/** 订单（本地持久化） */
 export interface Order {
   id: string
   items: OrderItem[]
@@ -71,6 +81,10 @@ export interface Order {
   address: Address
   createdAt: number
   status: OrderStatus
-  /** 明确标注：模拟数据 */
-  mock: true
+  /** 物流信息（发货后填充） */
+  logistics?: Logistics
+  /** 支付时间 */
+  paidAt?: number
+  /** 发货时间 */
+  shippedAt?: number
 }

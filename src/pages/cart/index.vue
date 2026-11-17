@@ -31,10 +31,6 @@
         </view>
       </view>
 
-      <view class="mock-tip">
-        <text>演示说明：购物车数据保存在本机，不会上传</text>
-      </view>
-
       <!-- 底部结算栏 -->
       <view class="bottom-bar safe-bottom">
         <view class="check" :class="{ checked: allChecked }" @tap="toggleAll">✓</view>
